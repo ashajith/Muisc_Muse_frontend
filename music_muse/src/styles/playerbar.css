@@ -1,0 +1,188 @@
+@reference "tailwindcss";
+
+
+
+/* Container (glass effect) */
+.playerbar-container {
+    @apply fixed bottom-0 left-0 w-full h-24 flex items-center px-12 z-50;
+    background: rgba(23, 23, 23, 0.8);
+    backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.music-icon {
+    font-size: 20px;
+}
+
+.material-symbols-outlined {
+    line-height: inherit;
+}
+
+/* Play button */
+.play-btns {
+    font-size: 48px;
+    color: #a78bfa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.play-btns:hover {
+    transform: scale(1.1);
+}
+
+.play-btns:active {
+    transform: scale(0.95);
+}
+
+/* Progress section */
+.progress-wrapper {
+    @apply flex items-center gap-2 w-full max-w-lg text-[10px] uppercase tracking-widest font-semibold text-neutral-500;
+}
+
+/* Track */
+.progress-bar {
+    position: relative;
+    height: 4px;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: visible;
+}
+
+/* Fill */
+.progress-fill {
+    position: relative;
+    /* REQUIRED for thumb */
+    height: 100%;
+    border-radius: 999px;
+
+    background: linear-gradient(90deg,
+            #8b5cf6 0%,
+            #6366f1 50%,
+            #3b82f6 100%);
+}
+
+/* WHITE DOT (THUMB) */
+.progress-fill::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+    background: #fff;
+
+    transform: translate(50%, -50%);
+    /* EXACT center on edge */
+
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* SHOW DOT ON HOVER */
+.progress-bar:hover .progress-fill::after {
+    opacity: 1;
+    transform: translate(50%, -50%) scale(1);
+}
+
+/* Range input hidden but functional */
+.progress-bar input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Volume */
+.volume-wrapper {
+    @apply flex items-center gap-2 w-32;
+}
+
+.volume-bar {
+    position: relative;
+    height: 4px;
+    flex: 1;
+    background: #262626;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.volume-fill {
+    height: 100%;
+    background: linear-gradient(to right, #7c5ce8, #a855f7);
+}
+
+.volume-bar input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/* Progressbar for volume */
+.custom-progress-wrapper {
+    @apply flex items-center gap-2 w-full max-w-lg text-[10px] uppercase tracking-widest font-semibold text-neutral-500;
+}
+
+/* Track */
+.custom-progress-bar {
+    position: relative;
+    height: 4px;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: visible;
+}
+
+/* Fill */
+.custom-progress-fill {
+    position: relative;
+    height: 100%;
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+/* THUMB (REAL ELEMENT) */
+.custom-progress-thumb {
+    position: absolute;
+    right: 0;
+    top: 50%;
+
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+
+    transform: translate(50%, -50%) scale(0.8);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* SHOW ON HOVER */
+.custom-progress-bar:hover .custom-progress-thumb {
+    opacity: 1;
+    transform: translate(50%, -50%) scale(1);
+}
+
+/* Hidden range */
+.custom-progress-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}

@@ -1,0 +1,70 @@
+.artist-section {
+  margin-top: 50px;
+}
+
+.subtext {
+  margin-bottom: 20px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+}
+
+.subtext-one {
+  margin-bottom: 20px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+}
+
+.heading {
+  font-size: 30px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 36px;
+}
+
+.artist-avatar {
+  width: 170px;
+  height: 170px;
+  border-radius: 9999px;
+  object-fit: cover;
+
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Hover image */
+.group:hover .artist-avatar {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4);
+}
+
+/* Play button */
+.play-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #8b5cf6, #6366f1, #3b82f6);
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover button */
+.group:hover .play-btn {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Subtle hover lift */
+.group:hover {
+  transform: translateY(-2px);
+  transition: transform 0.25s ease;
+}

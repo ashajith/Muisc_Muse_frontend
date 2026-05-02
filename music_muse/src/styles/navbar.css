@@ -1,0 +1,224 @@
+.nav-arrows {
+
+    /* Glass background */
+    background: #171717;
+
+    /* Strong blur (key for glass) */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+
+    /* subtle glass edge */
+    border: 1px solid #171717;
+
+    /* layout */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* icon color */
+    color: #a3a3a3;
+
+    /* depth */
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.nav-arrows:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* Tabs */
+.tabs {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    /* spacing between tabs */
+}
+
+/* Default text */
+.tab {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: rgb(163 163 163);
+    opacity: 1;
+    transition: color 0.25s ease;
+
+    padding-bottom: 6px;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* Base underline (hidden) */
+.tab .underline {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background: #a78bfa;
+    border-radius: 999px;
+
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+}
+
+/* Show underline on BOTH hover + active */
+.tab:hover .underline,
+.tab.active .underline {
+    transform: scaleX(1);
+}
+
+/* Hover text */
+.tab:hover {
+    color: #a78bfa;
+}
+
+/* Active text */
+.tab.active {
+    color: #a78bfa;
+}
+
+
+/* Search Bar */
+.search-container {
+    position: relative;
+    margin-right: 5px;
+}
+
+/* Icon */
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 40%;
+    transform: translateY(-50%);
+
+    font-size: 18px;
+    color: #737373;
+
+    width: 28px;
+    height: 18px;
+}
+
+/* Input */
+.search-input {
+    width: 256px;
+    height: 36px;
+
+    background: #171717;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    border-radius: 999px;
+
+    padding: 8px 16px 8px 40px;
+
+    color: rgba(255, 255, 255, 0.8);
+
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+/* Placeholder */
+.search-input::placeholder {
+    color: #737373;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* Focus */
+.search-input:focus {
+    border-color: rgba(124, 92, 232, 0.4);
+    background: #16161c;
+}
+
+/* Notification */
+.bell-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: #0b0b0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+/* Icon */
+.bell-icon {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.8);
+
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* Notification dot */
+.notification-dot {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 6px;
+  height: 6px;
+
+  background: #8b5cf6; 
+  border-radius: 50%;
+}
+
+/* Settings */
+.settings-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: #0b0b0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+/* Hover */
+.settings-btn:hover {
+  color: #a78bfa; /* violet-400 */
+}
+
+/* Icon */
+.settings-icon {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.8);
+
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+}

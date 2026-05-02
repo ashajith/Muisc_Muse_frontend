@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* your custom styles below */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #111111;
+  overflow-x: hidden;
+}
