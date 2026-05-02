@@ -19,7 +19,7 @@ export const getPlaylists = async () => {
 
 
 export const getPlaylistSongs = async (playlistId) => {
-  const res = await fetch(`http://localhost:8000/api/playlists/${playlistId}/`);
+  const res = await fetch(`${API}/playlists/${playlistId}/`);
   if (!res.ok) throw new Error("Failed to fetch playlist");
-  return res.json(); // expects { playlist: {...}, songs: [...] }
+  return res.json(); 
 };

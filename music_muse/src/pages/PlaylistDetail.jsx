@@ -84,19 +84,12 @@ const PlaylistDetail = () => {
       <div className="text-white pb-10">
 
         {/* HERO */}
-        <section className="relative pt-24 pb-12 px-10 overflow-hidden">
+        <section className="relative pt-24 pb-12 px-10 overflow-hidden mt-[80px]!">
 
           <div className="absolute inset-0 -z-10 opacity-30 blur-[120px] pointer-events-none">
             <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-purple-600 rounded-full"></div>
             <div className="absolute top-1/2 -right-24 w-[500px] h-[500px] bg-indigo-500 rounded-full"></div>
           </div>
-
-          <button
-            onClick={() => navigate(-1)}
-            className="mb-6 text-neutral-400 hover:text-white text-sm"
-          >
-            ← Back
-          </button>
 
           <div className="flex flex-col md:flex-row items-end gap-8">
 
