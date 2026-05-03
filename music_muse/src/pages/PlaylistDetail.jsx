@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPlaylistSongs } from "../services/spotify";
 import usePlayerStore from "../store/playerStore";
 import Layout from "../components/Layout";
+import "../styles/playlist_detail.css"
 
 const PlaylistDetail = () => {
   const { id } = useParams();
