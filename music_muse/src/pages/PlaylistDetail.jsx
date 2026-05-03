@@ -145,13 +145,10 @@ const PlaylistDetail = () => {
         </div>
       </section>
 
-      <section className="px-8! py-8! flex items-center space-x-8 sticky top-[72px] bg-background/80 backdrop-blur-md z-30">
+      <section className="px-8! py-8! flex items-center space-x-8! sticky top-[72px] bg-background/80 backdrop-blur-md z-30">
 
         {/* PLAY BUTTON */}
-        <button
-          onClick={() => handlePlaySong(songs[0])}
-          className="sonic-pulse-hover w-16 h-16 bg-gradient-to-br from-[#a78bfa] to-[#3b82f6] rounded-full flex items-center justify-center text-on-primary-fixed shadow-xl shadow-primary/20"
-        >
+        <button onClick={() => songs.length && handlePlaySong(songs[0])} className="sonic-pulse-hover w-16 h-16 bg-gradient-to-br from-[#a78bfa] to-[#3b82f6] rounded-full flex items-center justify-center text-on-primary-fixed shadow-xl shadow-primary/20 cursor-pointer">
           <span
             className="material-symbols-outlined text-4xl"
             style={{ fontVariationSettings: "'FILL' 1" }}
@@ -161,19 +158,92 @@ const PlaylistDetail = () => {
         </button>
 
         {/* LIKE BUTTON */}
-        <button className="text-on-surface-variant hover:text-primary transition-colors">
+        <button className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
           <span className="material-symbols-outlined text-4xl">
             favorite
           </span>
         </button>
 
         {/* MORE BUTTON */}
-        <button className="text-on-surface-variant hover:text-primary transition-colors">
+        <button className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
           <span className="material-symbols-outlined text-4xl">
             more_horiz
           </span>
         </button>
 
+      </section>
+
+      <section className="px-8!">
+
+        {/* HEADER */}
+        <div className="grid grid-cols-[16px_minmax(200px,2fr)_minmax(120px,1fr)_minmax(120px,1fr)_80px] gap-4 px-4! py-3! border-b border-white/10 text-neutral-500 font-label text-[10px] uppercase tracking-[0.1em] mb-4!">
+          
+          <div>#</div>
+          <div>Title</div>
+          <div className="hidden sm:block">Album</div>
+          <div className="hidden lg:block">Date Added</div>
+          <div className="text-right flex justify-end items-center">
+            <span className="material-symbols-outlined text-sm">schedule</span>
+          </div>
+        </div>
+
+        <div className="space-y-1!">
+          {[1, 2, 3, 4, 5].map((num) => (
+            <div
+              key={num}
+              className="grid grid-cols-[16px_minmax(200px,2fr)_minmax(120px,1fr)_minmax(120px,1fr)_80px] gap-4 px-4! py-3! items-center rounded-lg hover:bg-surface-container transition-all group cursor-pointer"
+            >
+              {/* INDEX → PLAY ICON */}
+              <div className="relative w-4 text-[14px] font-medium text-[#D095FF]">
+                <span className="group-hover:opacity-0 transition duration-100">
+                  {num}
+                </span>
+
+                <span
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-200 material-symbols-outlined text-[14px] flex items-center justify-center"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  play_arrow
+                </span>
+              </div>
+
+              {/* TITLE */}
+              <div className="flex items-center space-x-4!">
+                <div className="w-10 h-10 bg-neutral-800 rounded overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZLwMpEWjTnH3wm0oLGB_OjHTrz1MOu3kvOPmY-ZtP9xkMaAPY1KiG4fyIwN1xTXxQELZcXX4ipKhxKCVvkp5gxEU_bSAQFiCudfY_okDr9FYi5cIJbvy0vht0FW5Vy0MsAQpF7iZ5p7btJL6osGp-WsEDMR8OilbK3Z0DP3xQ32frGh6SesyKLuQLrGIqfydXhkyOCeobYka9_zyJq2L01n9-SGKIOdJ0G2KRnxEwJvNfdjEICL85qCK95M3Dr5d-_nGILQBJ1XY"
+                    alt="track"
+                  />
+                </div>
+
+                <div className="overflow-hidden">
+                  <h4 className="font-semibold text-[#D095FF] font-Jakarta truncate group-hover:text-primary transition">
+                    Track {num}
+                  </h4>
+                  <p className="text-sm text-neutral-300 truncate">
+                    Artist Name
+                  </p>
+                </div>
+              </div>
+
+              {/* ALBUM */}
+              <div className="hidden sm:block text-sm text-neutral-400 truncate">
+                Album Name
+              </div>
+
+              {/* DATE */}
+              <div className="hidden lg:block text-sm text-neutral-400">
+                2 days ago
+              </div>
+
+              {/* DURATION */}
+              <div className="text-right text-sm text-neutral-400">
+                3:12
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
     </Layout>

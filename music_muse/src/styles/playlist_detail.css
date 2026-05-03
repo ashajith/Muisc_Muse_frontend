@@ -1,56 +1,25 @@
-.sonic-btn {
+.sonic-hover {
   position: relative;
-  overflow: visible;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.sonic-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 12px 35px rgba(167, 139, 250, 0.35);
+/* Slight lift */
+.sonic-hover:hover {
+  transform: translateY(-2px) scale(1.02);
 }
 
-/* Inner glow */
-.sonic-btn::after {
+/* Soft glow (no pulse spam) */
+.sonic-hover::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.25), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
-.sonic-btn:hover::after {
+.sonic-hover:hover::before {
   opacity: 1;
-}
-
-/* Ripple wave */
-.sonic-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: inherit;
-  transform: scale(1);
-  opacity: 0;
-}
-
-.sonic-btn:hover::before {
-  animation: sonicWave 1.4s ease-out infinite;
-}
-
-@keyframes sonicWave {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-    filter: blur(0px);
-  }
-  60% {
-    opacity: 0.2;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-    filter: blur(6px);
-  }
 }
