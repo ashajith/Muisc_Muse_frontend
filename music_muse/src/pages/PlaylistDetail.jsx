@@ -81,147 +81,39 @@ const PlaylistDetail = () => {
 
   return (
     <Layout>
-      <div className="text-white pb-10">
-
-        {/* HERO */}
-        <section className="relative pt-24 pb-12 px-10 overflow-hidden mt-[80px]!">
-
-          <div className="absolute inset-0 -z-10 opacity-30 blur-[120px] pointer-events-none">
-            <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-purple-600 rounded-full"></div>
-            <div className="absolute top-1/2 -right-24 w-[500px] h-[500px] bg-indigo-500 rounded-full"></div>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-end gap-8">
-
-            {/* COVER */}
-            <div className="w-full md:w-72 aspect-square shadow-2xl shadow-black/80 rounded-lg overflow-hidden group relative">
-              <img
-                src={playlist?.image}
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 flex items-center justify-center">
-                <button onClick={() => handlePlaySong(songs[0])}>
-                  <span className="material-symbols-outlined text-white text-6xl">
-                    play_circle
-                  </span>
-                </button>
+      <section class="relative pt-24 pb-12 px-8 overflow-hidden">
+        
+        {/* Atmospheric Glow Background */}
+        <div class="absolute top-0 left-0 w-full h-full -z-10 opacity-30 blur-[100px] pointer-events-none">
+          <div class="absolute -top-24 -left-24 w-[600px] h-[600px] bg-primary rounded-full"></div>
+          <div class="absolute top-1/2 -right-24 w-[500px] h-[500px] bg-tertiary rounded-full"></div>
+        </div>
+        <div class="flex flex-col md:flex-row items-end gap-8 relative z-10">
+          <div class="w-full md:w-72 aspect-square flex-shrink-0 shadow-2xl shadow-black/80 rounded-lg overflow-hidden group relative">
+            <img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" data-alt="vibrant abstract explosion of purple and blue smoke with dynamic particles and energy waves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCusQ8w9PYWHT0LcDD1s3h-7vzUhI5g7QawpQ73XOWZO9xCqJ4KVDhr_3OwLt7mJ3pyqQtDe_4Sql1eD2PiK5RoIRrMSYvOcFFSMZ79UzV8Uvq0F-h2Urh_SWzAFSpna9cf2dCJd679aXYjIi85OLkeMxcczvf8igsHI7tINo7yiimNGU-49PgGy8DrrUFHcAvMFYoyCueTOrrFH7C6o4DcHul7S4pdU0CM_UMO4rfOOo9PmqyYGtOCIHxobH8G9re_pm-AQx2N6Zo" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-6xl" style="font-variation-settings: 'FILL' 1;">play_circle</span>
               </div>
-            </div>
-
-            {/* META */}
-            <div className="flex-1 space-y-4">
-
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-purple-400">
-                Playlist
-              </span>
-
-              <h1 className="text-5xl md:text-8xl font-black leading-none">
-                {playlist?.name}
-              </h1>
-
-              <p className="text-neutral-400 max-w-2xl">
-                {playlist?.description}
-              </p>
-
-              <div className="flex items-center gap-4 text-sm text-neutral-400">
-                <span className="text-white font-semibold">Music Muse</span>
-                <span>• {songs.length} songs</span>
-                <span>
-                  • {totalHr > 0
-                    ? `${totalHr} hr ${totalMin} min`
-                    : `${totalMin} min`}
-                </span>
-              </div>
-            </div>
           </div>
-        </section>
-
-        {/* CONTROLS */}
-        <section className="px-10 py-6 flex items-center gap-6 sticky top-[72px] bg-black/80 backdrop-blur-md z-30">
-
-          <button
-            onClick={() => songs.length && handlePlaySong(songs[0])}
-            className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-500"
-          >
-            <span className="material-symbols-outlined text-4xl text-white">
-              {playlistIsActive && isPlaying ? "pause" : "play_arrow"}
-            </span>
-          </button>
-
-          <button className="text-neutral-400 hover:text-purple-400">
-            <span className="material-symbols-outlined text-3xl">favorite</span>
-          </button>
-
-          <button className="text-neutral-400 hover:text-purple-400">
-            <span className="material-symbols-outlined text-3xl">more_horiz</span>
-          </button>
-        </section>
-
-        {/* TRACK TABLE */}
-        <section className="px-10">
-
-          <div className="grid grid-cols-[16px_minmax(200px,2fr)_minmax(120px,1fr)_minmax(120px,1fr)_80px] gap-4 px-4 py-3 border-b border-white/10 text-neutral-500 text-[10px] uppercase tracking-widest mb-4">
-            <div>#</div>
-            <div>Title</div>
-            <div className="hidden sm:block">Album</div>
-            <div className="hidden lg:block">Date Added</div>
-            <div className="text-right">⏱</div>
-          </div>
-
-          <div className="space-y-1">
-            {songs.map((song, i) => {
-              const isActive = currentSong?.id === song.id;
-              const isHovered = hoveredRow === song.id;
-
-              return (
-                <div
-                  key={song.id}
-                  onMouseEnter={() => setHoveredRow(song.id)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                  onDoubleClick={() => handlePlaySong(song)}
-                  className="grid grid-cols-[16px_minmax(200px,2fr)_minmax(120px,1fr)_minmax(120px,1fr)_80px] gap-4 px-4 py-3 items-center rounded-lg hover:bg-white/5 group"
-                >
-
-                  <div className={`text-sm ${isActive ? "text-purple-400 font-bold" : "text-neutral-500"}`}>
-                    <span className="group-hover:hidden">{i + 1}</span>
-                    <span className="hidden group-hover:block material-symbols-outlined text-sm">
-                      play_arrow
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={song.image || playlist?.image}
-                      className="w-10 h-10 rounded object-cover"
-                    />
-                    <div className="overflow-hidden">
-                      <h4 className={`truncate ${isActive ? "text-purple-400" : ""}`}>
-                        {song.title}
-                      </h4>
-                      <p className="text-neutral-400 text-sm truncate">
-                        {song.artist?.name || song.artist}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="hidden sm:block text-neutral-400 text-sm truncate">
-                    {song.album}
-                  </div>
-
-                  <div className="hidden lg:block text-neutral-400 text-sm">
-                    {formatDateAdded(song.date_added)}
-                  </div>
-
-                  <div className="text-right text-neutral-400 text-sm">
-                    {formatDuration(song.duration)}
-                  </div>
+          <div class="flex-1 space-y-4">
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Playlist</span>
+            <h2 class="text-5xl md:text-8xl font-black tracking-tighter -ml-1 leading-none">Punjabi 101</h2>
+            <p class="text-on-surface-variant max-w-2xl font-medium">The ultimate collection of Punjabi hits featuring Sidhu Moose Wala, Diljit Dosanjh, and the hottest sounds from the scene.</p>
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-6">
+              <div class="flex items-center space-x-2">
+                <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                  <span class="material-symbols-outlined text-on-primary-fixed text-xs font-bold">bolt</span>
                 </div>
-              );
-            })}
+                <span class="font-bold text-sm">Electric Sonic</span>
+              </div>
+              <span class="text-sm text-neutral-400">• 1,425,092 likes</span>
+              <span class="text-sm text-neutral-400">• 50 songs, <span class="text-on-surface">2 hr 45 min</span></span>
+            </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      
     </Layout>
   );
 };
