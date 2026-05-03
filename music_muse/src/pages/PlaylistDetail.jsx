@@ -100,16 +100,16 @@ const PlaylistDetail = () => {
             />
 
             {/* Hover Play Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <span className="material-symbols-outlined text-white text-6xl">
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span className="material-symbols-outlined text-white text-6xl!">
                 play_circle
               </span>
             </div>
           </div>
 
           {/* TEXT CONTENT */}
-          <div className="flex-1 space-y-4">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+          <div className="flex-1 space-y-7!">
+            <span className="text-[16px] font-bold uppercase tracking-[2px] text-[rgb(208_149_255/1)]">
               Playlist
             </span>
 
@@ -125,26 +125,55 @@ const PlaylistDetail = () => {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-6">
               <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-xs">
+                  <span className="material-symbols-outlined text-on-primary-fixed text-xs font-bold">
                     bolt
                   </span>
                 </div>
-                <span className="font-bold text-sm">Electric Sonic</span>
+                <span className="font-bold text-sm">Music_Muse</span>
               </div>
 
-              <span className="text-sm text-neutral-400">
+              <span className="text-[14px] font-jakarta font-medium text-neutral-400">
                 • 1,425,092 likes
               </span>
 
-              <span className="text-sm text-neutral-400">
-                • 50 songs, <span className="text-white">2 hr 45 min</span>
+              <span className="text-[14px] font-jakarta font-medium text-neutral-400">
+                • 50 songs,  <span className="text-[rgb(255_255_255/1)]"> 2 hr 45 min</span>
               </span>
             </div>
           </div>
         </div>
       </section>
 
+      <section className="px-8! py-8! flex items-center space-x-8 sticky top-[72px] bg-background/80 backdrop-blur-md z-30">
 
+        {/* PLAY BUTTON */}
+        <button
+          onClick={() => handlePlaySong(songs[0])}
+          className="sonic-pulse-hover w-16 h-16 bg-gradient-to-br from-[#a78bfa] to-[#3b82f6] rounded-full flex items-center justify-center text-on-primary-fixed shadow-xl shadow-primary/20"
+        >
+          <span
+            className="material-symbols-outlined text-4xl"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            {playlistIsActive && isPlaying ? "pause" : "play_arrow"}
+          </span>
+        </button>
+
+        {/* LIKE BUTTON */}
+        <button className="text-on-surface-variant hover:text-primary transition-colors">
+          <span className="material-symbols-outlined text-4xl">
+            favorite
+          </span>
+        </button>
+
+        {/* MORE BUTTON */}
+        <button className="text-on-surface-variant hover:text-primary transition-colors">
+          <span className="material-symbols-outlined text-4xl">
+            more_horiz
+          </span>
+        </button>
+
+      </section>
 
     </Layout>
   );
