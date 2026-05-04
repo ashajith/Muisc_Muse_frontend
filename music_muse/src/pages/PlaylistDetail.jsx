@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import usePlayerStore from "../store/playerStore";
 import Layout from "../components/Layout";
 import "../styles/playlist_detail.css";
+import { getPlaylistSongs } from "../services/spotify";
 
 // ─── API helper ────────────────────────────────────────────────────────────────
 const API_BASE = "http://localhost:8000/api";
