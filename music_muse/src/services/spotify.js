@@ -21,7 +21,10 @@ export const getPlaylists = async () => {
 export const getPlaylistSongs = async (playlistId) => {
   const token = localStorage.getItem("token");
   const res = await fetch(`http://localhost:8000/api/playlists/${playlistId}/`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${token}`,   // ← change Bearer to JWT
+    },
   });
   if (!res.ok) throw new Error(`Failed to fetch playlist (${res.status})`);
   return res.json();
