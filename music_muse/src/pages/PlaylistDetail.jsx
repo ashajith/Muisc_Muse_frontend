@@ -5,17 +5,6 @@ import Layout from "../components/Layout";
 import "../styles/playlist_detail.css";
 import { getPlaylistSongs } from "../services/spotify";
 
-// ─── API helper ────────────────────────────────────────────────────────────────
-const API_BASE = "http://localhost:8000/api";
-
-const getPlaylistSongs = async (playlistId) => {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_BASE}/playlists/${playlistId}/`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
-  if (!res.ok) throw new Error(`Failed to fetch playlist (${res.status})`);
-  return res.json(); // { playlist: {...}, songs: [...] }
-};
 // ───────────────────────────────────────────────────────────────────────────────
 
 const PlaylistDetail = () => {
