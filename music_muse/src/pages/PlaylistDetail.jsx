@@ -28,7 +28,7 @@ const PlaylistDetail = () => {
       try {
         const data = await getPlaylistSongs(id);
         setPlaylist(data.playlist);
-        setSongs(data.songs);
+        setSongs(Array.isArray(data?.songs) ? data.songs : []);
       } catch (err) {
         console.error(err);
         setError(err.message);
@@ -165,7 +165,7 @@ const PlaylistDetail = () => {
               Playlist
             </span>
 
-            <h2 className="text-5xl md:text-8xl font-black tracking-tighter -ml-1 leading-none">
+            <h2 className="text-[80px]! md:text-8xl font-black tracking-tighter -ml-1 leading-none">
               {playlist.name}
             </h2>
 
