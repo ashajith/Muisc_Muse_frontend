@@ -19,7 +19,10 @@ export const getPlaylists = async () => {
 
 
 export const getPlaylistSongs = async (playlistId) => {
-  const res = await fetch(`${API}/playlists/${playlistId}/`);
-  if (!res.ok) throw new Error("Failed to fetch playlist");
-  return res.json(); 
+  const token = localStorage.getItem("token");
+  const res = await fetch(`http://localhost:8000/api/playlists/${playlistId}/`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error(`Failed to fetch playlist (${res.status})`);
+  return res.json();
 };
