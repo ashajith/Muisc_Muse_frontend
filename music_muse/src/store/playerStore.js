@@ -1,23 +1,33 @@
 import { create } from "zustand";
 
 const audio = new Audio();
-audio.crossOrigin = "anonymous";
 
-// ─── Fetch YouTube audio URL from backend ─────────────────────────────────────
-async function fetchYouTubeAudioUrl(title, artist) {
+const safePlay = async () => {
   try {
-    const params = new URLSearchParams({ title, artist });
-    const res = await fetch(`http://localhost:8000/api/audio/?${params}`);
+    await audio.play();
+    return true;
+  } catch (err) {
+    console.warn("Audio play failed:", err.message);
+    return false;
+  }
+};
+
+// Fetch playable URL from JioSaavn via our backend
+const fetchAudioUrl = async (title, artist) => {
+  try {
+    const params = new URLSearchParams({ title, artist: artist || "" });
+    const res = await fetch(`http://127.0.0.1:8000/api/audio/?${params}`);
+    if (!res.ok) return null;
     const data = await res.json();
     return data.audio_url || null;
   } catch (err) {
-    console.error("[Player] Failed to fetch audio URL:", err);
+    console.warn("fetchAudioUrl failed:", err.message);
     return null;
   }
-}
+};
 
 const usePlayerStore = create((set, get) => ({
-  // State
+  // ── State ─────────────────────────────────────────────────
   currentSong: null,
   queue: [],
   originalQueue: [],
@@ -25,71 +35,77 @@ const usePlayerStore = create((set, get) => ({
   volume: 1,
   progress: 0,
   duration: 0,
-  repeat: "none",       // "none" | "all" | "one"
+  repeat: "none",
   shuffle: false,
   likedSongs: new Set(),
-  isLoadingAudio: false, // ✅ loading state while fetching YouTube URL
-  noPreview: false,
 
-  // ─── Play a song ─────────────────────────────────────────────────────────────
+  // ── Internal: resolve URL (Spotify preview → JioSaavn fallback) then play
+  _loadAndPlay: async (song) => {
+    let url = song.audio_url;
+
+    if (!url) {
+      const artistName =
+        typeof song.artist === "object" ? song.artist?.name : song.artist;
+      url = await fetchAudioUrl(song.title, artistName);
+    }
+
+    if (!url) {
+      // No audio found anywhere — song shows in bar but won't play
+      set({ isPlaying: false });
+      return;
+    }
+
+    audio.src = url;
+    audio.volume = get().volume;
+    const ok = await safePlay();
+    set({ isPlaying: ok });
+  },
+
+  // ── Play a song ───────────────────────────────────────────
   playSong: async (song, queue = []) => {
-    const { shuffle, volume } = get();
-    const newQueue = queue.length ? queue : [song];
+    const { shuffle } = get();
+    let newQueue = queue.length ? queue : [song];
 
-    // Show song in playerbar immediately while we fetch the audio URL
     set({
       currentSong: song,
       originalQueue: newQueue,
       queue: shuffle ? shuffleQueue(newQueue, song) : newQueue,
       isPlaying: false,
-      isLoadingAudio: true,
-      noPreview: false,
       progress: 0,
       duration: 0,
     });
 
-    // Fetch YouTube audio URL from backend
-    const artistName = song.artist?.name || song.artist || "";
-    const audioUrl = await fetchYouTubeAudioUrl(song.title, artistName);
-
-    if (!audioUrl) {
-      set({ isLoadingAudio: false, noPreview: true, isPlaying: false });
-      return;
-    }
-
-    // Set audio source and play
-    audio.src = audioUrl;
-    audio.volume = volume;
-
-    try {
-      await audio.play();
-      set({ isPlaying: true, isLoadingAudio: false, noPreview: false });
-    } catch (err) {
-      console.warn("[Player] Audio play failed:", err);
-      set({ isPlaying: false, isLoadingAudio: false, noPreview: true });
-    }
+    await get()._loadAndPlay(song);
   },
 
-  // ─── Play / Pause toggle ─────────────────────────────────────────────────────
-  togglePlay: () => {
-    const { isPlaying, noPreview, isLoadingAudio } = get();
-    if (noPreview || isLoadingAudio) return;
+  // ── Play / Pause toggle ───────────────────────────────────
+  togglePlay: async () => {
+    const { isPlaying, currentSong } = get();
+    if (!currentSong) return;
+
     if (isPlaying) {
       audio.pause();
+      set({ isPlaying: false });
     } else {
-      audio.play().catch((err) => console.warn("[Player] play failed:", err));
+      // If no src loaded yet, try fetching again
+      if (!audio.src || audio.src === window.location.href) {
+        await get()._loadAndPlay(currentSong);
+      } else {
+        const ok = await safePlay();
+        set({ isPlaying: ok });
+      }
     }
-    set({ isPlaying: !isPlaying });
   },
 
-  // ─── Skip to next ────────────────────────────────────────────────────────────
-  playNext: () => {
+  // ── Skip to next ──────────────────────────────────────────
+  playNext: async () => {
     const { currentSong, queue, repeat, originalQueue, shuffle } = get();
     if (!queue.length) return;
 
     if (repeat === "one") {
       audio.currentTime = 0;
-      audio.play();
+      const ok = await safePlay();
+      set({ isPlaying: ok, progress: 0 });
       return;
     }
 
@@ -99,7 +115,9 @@ const usePlayerStore = create((set, get) => ({
     if (isLast) {
       if (repeat === "all") {
         const newQueue = shuffle ? shuffleQueue(originalQueue) : originalQueue;
-        get().playSong(newQueue[0], newQueue);
+        const next = newQueue[0];
+        set({ queue: newQueue, currentSong: next, isPlaying: false, progress: 0 });
+        await get()._loadAndPlay(next);
       } else {
         audio.pause();
         set({ isPlaying: false });
@@ -107,11 +125,13 @@ const usePlayerStore = create((set, get) => ({
       return;
     }
 
-    get().playSong(queue[idx + 1], queue);
+    const next = queue[idx + 1];
+    set({ currentSong: next, isPlaying: false, progress: 0 });
+    await get()._loadAndPlay(next);
   },
 
-  // ─── Previous / Restart ──────────────────────────────────────────────────────
-  playPrev: () => {
+  // ── Previous / Restart ────────────────────────────────────
+  playPrev: async () => {
     const { currentSong, queue, progress } = get();
     if (!queue.length) return;
 
@@ -128,22 +148,14 @@ const usePlayerStore = create((set, get) => ({
       return;
     }
 
-    get().playSong(queue[idx - 1], queue);
+    const prev = queue[idx - 1];
+    set({ currentSong: prev, isPlaying: false, progress: 0 });
+    await get()._loadAndPlay(prev);
   },
 
-  // ─── Seek ────────────────────────────────────────────────────────────────────
-  seek: (seconds) => {
-    audio.currentTime = seconds;
-    set({ progress: seconds });
-  },
+  seek: (seconds) => { audio.currentTime = seconds; set({ progress: seconds }); },
+  setVolume: (val) => { audio.volume = val; set({ volume: val }); },
 
-  // ─── Volume ──────────────────────────────────────────────────────────────────
-  setVolume: (val) => {
-    audio.volume = val;
-    set({ volume: val });
-  },
-
-  // ─── Shuffle ─────────────────────────────────────────────────────────────────
   toggleShuffle: () => {
     const { shuffle, originalQueue, currentSong } = get();
     const newShuffle = !shuffle;
@@ -153,29 +165,22 @@ const usePlayerStore = create((set, get) => ({
     });
   },
 
-  // ─── Repeat: none → all → one → none ────────────────────────────────────────
   cycleRepeat: () => {
     const map = { none: "all", all: "one", one: "none" };
     set((state) => ({ repeat: map[state.repeat] }));
   },
 
-  // ─── Like toggle ─────────────────────────────────────────────────────────────
   toggleLike: async (songId) => {
     const { likedSongs } = get();
     const token = localStorage.getItem("access_token");
     const isLiked = likedSongs.has(songId);
-
     const updated = new Set(likedSongs);
     isLiked ? updated.delete(songId) : updated.add(songId);
     set({ likedSongs: updated });
-
     try {
-      await fetch(`http://localhost:8000/api/songs/${songId}/like/`, {
+      await fetch(`http://127.0.0.1:8000/api/songs/${songId}/like/`, {
         method: isLiked ? "DELETE" : "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
     } catch (err) {
       console.error("Like toggle failed", err);
@@ -183,12 +188,11 @@ const usePlayerStore = create((set, get) => ({
     }
   },
 
-  // ─── Load liked songs ────────────────────────────────────────────────────────
   loadLikedSongs: async () => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
     try {
-      const res = await fetch("http://localhost:8000/api/songs/liked/", {
+      const res = await fetch("http://127.0.0.1:8000/api/songs/liked/", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -198,22 +202,15 @@ const usePlayerStore = create((set, get) => ({
     }
   },
 
-  // ─── Sync progress ───────────────────────────────────────────────────────────
   syncProgress: () => {
     set({ progress: audio.currentTime, duration: audio.duration || 0 });
   },
 }));
 
-// ─── Audio event listeners ───────────────────────────────────────────────────
-audio.addEventListener("timeupdate", () => {
-  usePlayerStore.getState().syncProgress();
-});
+audio.addEventListener("timeupdate", () => usePlayerStore.getState().syncProgress());
+audio.addEventListener("ended", () => usePlayerStore.getState().playNext());
+audio.addEventListener("error", () => usePlayerStore.setState({ isPlaying: false }));
 
-audio.addEventListener("ended", () => {
-  usePlayerStore.getState().playNext();
-});
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 function shuffleQueue(queue, currentSong = null) {
   const arr = [...queue];
   for (let i = arr.length - 1; i > 0; i--) {

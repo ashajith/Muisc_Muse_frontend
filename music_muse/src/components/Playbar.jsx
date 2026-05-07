@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { IoPlayCircle, IoPauseCircle } from "react-icons/io5";
 import usePlayerStore from "../store/playerStore";
 import "../styles/playerbar.css";
@@ -11,11 +12,49 @@ const fmt = (sec) => {
 
 const Playbar = () => {
   const {
-    currentSong, isPlaying, progress, duration, volume,
-    shuffle, repeat, likedSongs, noPreview, isLoadingAudio,
-    togglePlay, playNext, playPrev, seek, setVolume,
-    toggleShuffle, cycleRepeat, toggleLike,
+    currentSong,
+    isPlaying,
+    togglePlay,
+    playNext,
+    playPrev,
+    progress,
+    duration,
+    seek,
+    volume,
+    setVolume,
+    shuffle,
+    toggleShuffle,
+    repeat,
+    cycleRepeat,
+    likedSongs,
+    toggleLike,
   } = usePlayerStore();
+
+  // Track whether audio is still loading after src changes
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+
+  // True when the current song has no preview URL at all
+  const noPreview = currentSong && !currentSong.audio_url;
+
+  // Watch currentSong changes to show loading state
+  const prevSongId = useRef(null);
+  useEffect(() => {
+    if (!currentSong) return;
+
+    if (currentSong.id !== prevSongId.current) {
+      prevSongId.current = currentSong.id;
+      if (currentSong.audio_url) {
+        setIsLoadingAudio(true);
+      }
+    }
+  }, [currentSong]);
+
+  // Clear loading state once audio actually starts playing
+  useEffect(() => {
+    if (isPlaying && isLoadingAudio) {
+      setIsLoadingAudio(false);
+    }
+  }, [isPlaying, isLoadingAudio]);
 
   if (!currentSong) return null;
 
@@ -31,10 +70,14 @@ const Playbar = () => {
       {/* LEFT */}
       <div className="flex items-center gap-4 w-1/3 min-w-0">
         <img
-          src={currentSong.image || "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=60&h=60&fit=crop"}
+          src={
+            currentSong.image ||
+            "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=60&h=60&fit=crop"
+          }
           alt={currentSong.title}
           className="w-14 h-14 rounded-lg shadow-lg object-cover flex-shrink-0"
         />
+
         <div className="min-w-0">
           <p className="text-white font-bold text-sm hover:text-violet-400 cursor-pointer transition-colors truncate">
             {currentSong.title}
@@ -42,6 +85,7 @@ const Playbar = () => {
           <p className="text-neutral-400 text-xs hover:text-white cursor-pointer transition-colors truncate">
             {currentSong.artist?.name || currentSong.artist || "Unknown Artist"}
           </p>
+
           {/* Status labels */}
           {isLoadingAudio && (
             <p className="text-[10px] text-violet-400 font-medium mt-0.5 animate-pulse">
@@ -50,14 +94,17 @@ const Playbar = () => {
           )}
           {noPreview && !isLoadingAudio && (
             <p className="text-[10px] text-amber-400 font-medium mt-0.5">
-              No audio available
+              No preview available
             </p>
           )}
         </div>
+
         <button
           onClick={() => toggleLike(currentSong.id)}
           className={`ml-2 flex-shrink-0 cursor-pointer transition-colors ${
-            isLiked ? "text-violet-400" : "text-neutral-500 hover:text-violet-400"
+            isLiked
+              ? "text-violet-400"
+              : "text-neutral-500 hover:text-violet-400"
           }`}
         >
           <span
@@ -76,7 +123,9 @@ const Playbar = () => {
           <button
             onClick={toggleShuffle}
             className={`cursor-pointer transition-colors ${
-              shuffle ? "text-violet-400" : "text-neutral-500 hover:text-violet-400"
+              shuffle
+                ? "text-violet-400"
+                : "text-neutral-500 hover:text-violet-400"
             }`}
           >
             <span className="material-symbols-outlined">shuffle</span>
@@ -89,15 +138,19 @@ const Playbar = () => {
             <span className="material-symbols-outlined">skip_previous</span>
           </button>
 
-          {/* Play/Pause — shows spinner while loading */}
+          {/* Play/Pause */}
           <button
             onClick={togglePlay}
             disabled={disabled}
-            className={`play-btns cursor-pointer transition-all ${disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-110"}`}
+            className={`play-btns cursor-pointer transition-all ${
+              disabled ? "opacity-40 cursor-not-allowed" : "hover:scale-110"
+            }`}
           >
             {isLoadingAudio ? (
-              <span className="material-symbols-outlined text-violet-400 animate-spin"
-                style={{ fontSize: 48 }}>
+              <span
+                className="material-symbols-outlined text-violet-400 animate-spin"
+                style={{ fontSize: 48 }}
+              >
                 progress_activity
               </span>
             ) : isPlaying ? (
@@ -117,7 +170,9 @@ const Playbar = () => {
           <button
             onClick={cycleRepeat}
             className={`cursor-pointer transition-colors relative ${
-              repeatActive ? "text-violet-400" : "text-neutral-500 hover:text-violet-400"
+              repeatActive
+                ? "text-violet-400"
+                : "text-neutral-500 hover:text-violet-400"
             }`}
           >
             <span className="material-symbols-outlined">{repeatIcon}</span>
@@ -127,11 +182,14 @@ const Playbar = () => {
           </button>
         </div>
 
-        {/* Progress */}
+        {/* Progress bar */}
         <div className="progress-wrapper">
           <span>{fmt(progress)}</span>
           <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${progressPct}%` }} />
+            <div
+              className="progress-fill"
+              style={{ width: `${progressPct}%` }}
+            />
             <input
               type="range"
               min={0}
@@ -150,10 +208,14 @@ const Playbar = () => {
       <div className="flex items-center justify-end gap-6 w-1/3">
         <div className="flex items-center gap-4">
           <button className="text-neutral-500 hover:text-violet-400 transition-colors scale-110">
-            <span className="material-symbols-outlined music-icon">music_note</span>
+            <span className="material-symbols-outlined music-icon">
+              music_note
+            </span>
           </button>
           <button className="text-neutral-500 hover:text-violet-400 transition-colors">
-            <span className="material-symbols-outlined text-xl">queue_music</span>
+            <span className="material-symbols-outlined text-xl">
+              queue_music
+            </span>
           </button>
           <button className="text-neutral-500 hover:text-violet-400 transition-colors">
             <span className="material-symbols-outlined text-xl">computer</span>
@@ -163,7 +225,11 @@ const Playbar = () => {
         {/* Volume */}
         <div className="flex items-center gap-2 w-28">
           <span className="material-symbols-outlined text-neutral-500 leading-none translate-y-px">
-            {volume === 0 ? "volume_off" : volume < 0.5 ? "volume_down" : "volume_up"}
+            {volume === 0
+              ? "volume_off"
+              : volume < 0.5
+              ? "volume_down"
+              : "volume_up"}
           </span>
           <div className="custom-progress-wrapper">
             <div className="custom-progress-bar group">
@@ -171,7 +237,8 @@ const Playbar = () => {
                 className="custom-progress-fill"
                 style={{
                   width: `${volume * 100}%`,
-                  background: "linear-gradient(90deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%)",
+                  background:
+                    "linear-gradient(90deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%)",
                 }}
               >
                 <div className="custom-progress-thumb" />
