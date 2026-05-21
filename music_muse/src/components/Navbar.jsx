@@ -3,10 +3,17 @@ import React, { useState } from "react";
 import "../styles/navbar.css"
 import { FaChevronLeft, FaChevronRight, FaBell, FaCog, } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState("Music");
   const tabs = ["Music", "Podcasts", "Live"];
+
+  const navigate = useNavigate();
+  const token = useAuthStore((state) => state.token);
+  const logout = useAuthStore((state) => state.logout);
 
   return (
     <nav className="fixed z-50 h-17 w-full flex items-center px-6 border-none bg-[#05050a]/80 backdrop-blur-md">
@@ -77,6 +84,25 @@ const Navbar = () => {
           <span className="settings-icon material-symbols-outlined">
             settings
           </span>
+        </button>
+
+        {/* Profile */}
+        <button
+          onClick={() => {
+            if (token) {
+              logout();
+              navigate("/login");
+            } else {
+              navigate("/login");
+            }
+          }}
+          className="w-10 h-10 p-[3px] cursor-pointer rounded-full bg-[#2c1b4d] hover:scale-105 transition-all duration-300"
+        >
+          <img
+            src="https://api.dicebear.com/7.x/adventurer/svg?seed=Felix"
+            alt="Profile"
+            className="w-full h-full rounded-full object-cover bg-[#f5d2b8]"
+          />
         </button>
 
       </div>
